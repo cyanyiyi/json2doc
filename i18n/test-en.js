@@ -14,7 +14,8 @@ const lan = {
             titleA: "Account login",
             status: {
                 en:'英文',
-                zh:'中文'
+                zh:'中文',
+                zh2:'zh'
             }
         }
     },
@@ -22,14 +23,22 @@ const lan = {
         list: {
             amount: 'Top-up amount',
             payType: 'Top-up payment method ',
-            createDate: 'Top-up time',
-            auditStatus: 'Audit status',
             auditReason: '我这里也有汉字，哈哈。'
         },
         commonAccount: 'Corporate account',
         passYes: 'Passed',
         passNo: 'Failed',
-        passCheck: '哈哈哈，呵呵。'
+        passCheck: '哈哈哈，呵呵。',
+        status: {
+            en:'英文',
+            zh:'中文',
+            zh2:'zh'
+        },
+        status_type: {
+            '': 'All',
+            'Common@valid': 'Valid',
+            'Common@invalid': 'Invalid'
+        }
     }
 }
 module.exports = lan;

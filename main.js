@@ -9,6 +9,7 @@ const LAN_CN = 'zh-CN';
 const LAN_TW = 'zh-TW';
 const LAN_EN = 'en-US';
 const REG_EXP_CN = /[\u4E00-\u9FA5]/g;
+const REG_EXP_EN = /[a-zA-Z\_\.\s]/g;
 let enUsJson = require(I18N_PATH_EN_US);
 let zhCnJson = require(I18N_PATH_ZH_CN);
 let testJsonEn = require(I18N_PATH_TEST_EN);
@@ -22,12 +23,25 @@ function _isEmptyObject(obj) {
     return true;
 }
 
-function fnFilterZhInEn(obj) {
+function fnDeleteZh(obj) {
     for (let k in obj) {
         if (typeof obj[k] === 'object') {
-            fnFilterZhInEn(obj[k]);
+            fnDeleteZh(obj[k]);
         } else {
             if (REG_EXP_CN.test(obj[k])) {
+                delete obj[k];
+            }
+        }
+    }
+    return obj;
+}
+
+function fnDeleteEn(obj) {
+    for (let k in obj) {
+        if (typeof obj[k] === 'object') {
+            fnDeleteEn(obj[k]);
+        } else {
+            if (REG_EXP_EN.test(obj[k])) {
                 delete obj[k];
             }
         }
@@ -48,9 +62,9 @@ function fnDeleteEmptyObj(obj) {
     return obj;
 }
 
-let filterTestJson = fnFilterZhInEn(testJsonEn);
+let filterTestJson = fnDeleteZh(testJsonEn);
 let pureTestJson = fnDeleteEmptyObj(filterTestJson);
-// console.log(pureTestJson);
+console.log(pureTestJson);
 
 function fnMergeObj(baseObj, obj){
     for ( let k in baseObj ) {
@@ -64,5 +78,10 @@ function fnMergeObj(baseObj, obj){
 }
 // console.log(testJsonZh);
 let newTestJsonEn = fnMergeObj(testJsonZh, pureTestJson);
-console.log(newTestJsonEn);
-console.log(newTestJsonEn.component.v_login.status);
+// console.log(newTestJsonEn);
+
+let filterTestJsonZh = fnDeleteEn(newTestJsonEn);
+let newTestJsonZh = fnDeleteEmptyObj(filterTestJsonZh);
+// console.log(JSON.stringify(filterTestJsonZh));
+// console.log(newTestJsonZh);
+// console.log(newTestJsonZh.component.v_login.status);
