@@ -8,8 +8,8 @@ const I18N_PATH_TEST_ZH = path.join(I18N_PATH, 'test-zh.js');
 const LAN_CN = 'zh-CN';
 const LAN_TW = 'zh-TW';
 const LAN_EN = 'en-US';
-const REG_EXP_CN = /[\u4E00-\u9FA5]/g;
-const REG_EXP_EN = /[a-zA-Z\_\.\s]/g;
+const REG_EXP_CN = /^[\u4E00-\u9FA5\.\s，。:：]+$/g; // 匹配中文带:。和不可见字符
+const REG_EXP_EN = /^[\w\d\-\.\s_:：']+$/g;
 let enUsJson = require(I18N_PATH_EN_US);
 let zhCnJson = require(I18N_PATH_ZH_CN);
 let testJsonEn = require(I18N_PATH_TEST_EN);
@@ -23,65 +23,85 @@ function _isEmptyObject(obj) {
     return true;
 }
 
-function fnDeleteZh(obj) {
+/**
+ * 删除语言包中value为中文的key
+ * @param {object}
+ * @return {object}
+*/
+function fnFilterZh(obj) {
     for (let k in obj) {
-        if (typeof obj[k] === 'object') {
-            fnDeleteZh(obj[k]);
-        } else {
-            if (REG_EXP_CN.test(obj[k])) {
-                delete obj[k];
-            }
+        if (REG_EXP_CN.test(obj[k]) || _isEmptyObject(obj[k])) {
+            delete obj[k];
+        }
+        if (typeof obj[k] === 'object' && !_isEmptyObject(obj[k])) {
+            fnFilterZh(obj[k]);
         }
     }
     return obj;
 }
 
-function fnDeleteEn(obj) {
+let filterTestJson = fnFilterZh(testJsonEn);
+console.log(filterTestJson);
+
+/**
+ * 删除语言包中value为英文的key
+ * @param {object}
+ * @return {object}
+*/
+function fnFilterEn(obj) {
     for (let k in obj) {
-        if (typeof obj[k] === 'object') {
-            fnDeleteEn(obj[k]);
-        } else {
-            if (REG_EXP_EN.test(obj[k])) {
-                delete obj[k];
-            }
+        if (REG_EXP_EN.test(obj[k]) || _isEmptyObject(obj[k])) {
+            delete obj[k];
+        }
+        if (typeof obj[k] === 'object' && !_isEmptyObject(obj[k])) {
+            fnFilterEn(obj[k]);
         }
     }
     return obj;
 }
 
-function fnDeleteEmptyObj(obj) {
-    for (let k in obj) {
-        if (typeof obj[k] === 'object') {
-            if (!_isEmptyObject(obj[k])) {
-                fnDeleteEmptyObj(obj[k]);
-            } else {
-                delete obj[k];
-            }
-        }
-    }
-    return obj;
-}
+// function fnDeleteEmptyObj(obj) {
+//     for (let k in obj) {
+//         if (typeof obj[k] === 'object') {
+//             if (!_isEmptyObject(obj[k])) {
+//                 fnDeleteEmptyObj(obj[k]);
+//             } else {
+//                 delete obj[k];
+//             }
+//         }
+//     }
+//     return obj;
+// }
 
-let filterTestJson = fnDeleteZh(testJsonEn);
-let pureTestJson = fnDeleteEmptyObj(filterTestJson);
-console.log(pureTestJson);
+// let filterTestJson = fnFilterZh(testJsonEn);
+// let pureTestJson = fnDeleteEmptyObj(filterTestJson);
+// console.log(filterTestJson);
+// console.log(filterTestJson.component.v_login.status);
 
+/**
+ * 比对baseObj和obj,若obj中的key不存在或者value为空,
+ * 则将baseObj中的值赋给obj中的改key
+ * @param {object}
+ * @return {object}
+*/
 function fnMergeObj(baseObj, obj){
     for ( let k in baseObj ) {
-        if(obj[k] === undefined) {
+        if(obj[k] === undefined || obj[k] === '' || _isEmptyObject(obj[k])) {
             obj[k] = baseObj[k];
-        } else if (typeof obj[k] === 'object') {
+        } 
+        if (typeof obj[k] === 'object' && !_isEmptyObject(obj[k])) {
             fnMergeObj(baseObj[k], obj[k]);
         }
     }
     return obj;
 }
 // console.log(testJsonZh);
-let newTestJsonEn = fnMergeObj(testJsonZh, pureTestJson);
+let newTestJsonEn = fnMergeObj(testJsonZh, filterTestJson);
 // console.log(newTestJsonEn);
 
-let filterTestJsonZh = fnDeleteEn(newTestJsonEn);
-let newTestJsonZh = fnDeleteEmptyObj(filterTestJsonZh);
-// console.log(JSON.stringify(filterTestJsonZh));
+let filterTestJsonZh = fnFilterEn(newTestJsonEn);
+// let newTestJsonZh = fnDeleteEmptyObj(filterTestJsonZh);
+// console.log(filterTestJsonZh);
+// console.log(filterTestJsonZh.component.v_login.status);
 // console.log(newTestJsonZh);
 // console.log(newTestJsonZh.component.v_login.status);

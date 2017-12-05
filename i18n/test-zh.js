@@ -3,22 +3,22 @@ const lan = {
         404: '404',
         common: "供应",
         components: "我是汉字",
-        components1: "我是汉字1",
-        components2: "我是汉字2"
+        components1: "我是汉字一",
+        components2: "我是汉字二"
     },
     component: {
         tips: {
             title: "提示",
             close: "我也是汉字",
-            close1: "我也是汉字22"
+            close1: "我也是汉字二二"
         },
         v_login: {
-            titleM: "我Mm",
+            titleM: "我",
             titleA: "登陆",
             status: {
                 en:'英文',
                 zh:'中文',
-                zh2:'中文'
+                tw:'台湾'
             }
         }
     },
@@ -37,7 +37,7 @@ const lan = {
         status: {
             en:'英文',
             zh:'中文',
-            zh2:'zh'
+            tw:'台湾'
         },
         status_type: {
             '': '全部',
