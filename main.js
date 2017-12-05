@@ -10,10 +10,8 @@ const LAN_TW = 'zh-TW';
 const LAN_EN = 'en-US';
 const REG_EXP_CN = /^[\u4E00-\u9FA5\s\/\-,，.。:：?？()（）≤<>%!！…*]+$/; // 匹配中文带标点和不可见字符
 const REG_EXP_EN = /^[\w\d\-\s\/\-_',，.。:：?？()（）≤<>%!！…*]+$/;
-let enUsJson = require(I18N_PATH_EN_US);
-let zhCnJson = require(I18N_PATH_ZH_CN);
-let testJsonEn = require(I18N_PATH_TEST_EN);
-let testJsonZh = require(I18N_PATH_TEST_ZH);
+const enUsJson = require(I18N_PATH_EN_US);
+const zhCnJson = require(I18N_PATH_ZH_CN);
 
 
 function _isEmptyObject(obj) {
@@ -61,7 +59,6 @@ function fnFilterEn(obj) {
     return obj;
 }
 
-
 /**
  * 比对baseObj和obj,若obj中的key不存在或者value为空,
  * 则将baseObj中的值赋给obj中的改key
@@ -80,12 +77,17 @@ function fnMergeObj(baseObj, obj){
     return obj;
 }
 
-function jsonToCsv(obj, pName) {
+/**
+ * 把json文件转换成csv文件
+ * @param {object} obj
+ * @param {string} pName
+*/
+function fnJsonToCsv(obj, pName) {
     let parentName = pName || '';
     for (let k in obj) {
         let str = ``;
         if (typeof obj[k] === 'object') {
-            jsonToCsv(obj[k], `${parentName}[${k}]`);
+            fnJsonToCsv(obj[k], `${parentName}[${k}]`);
         } else {
             str = `${parentName}[${k}],${obj[k]}`;
             fs.appendFileSync(path.join(__dirname, 'test.csv'), `${str}\n`, {
@@ -95,7 +97,16 @@ function jsonToCsv(obj, pName) {
     }
 }
 
-let filterZhJson = fnFilterZh(enUsJson);
-let newJsonEn = fnMergeObj(zhCnJson, filterZhJson);
-let enUsPenddingTranslate = fnFilterEn(newJsonEn);
-jsonToCsv(enUsPenddingTranslate);
+/**
+ * 生成待翻译的文件
+ * @param {object} zhJson
+ * @param {object} enJson
+*/
+function fnPendingTranslateFile(zhJson, enJson) {
+    let filterZhJson = fnFilterZh(enJson);
+    let newJsonEn = fnMergeObj(zhJson, filterZhJson);
+    let enUsPenddingTranslate = fnFilterEn(newJsonEn);
+    fnJsonToCsv(enUsPenddingTranslate);
+}
+
+fnPendingTranslateFile(zhCnJson, enUsJson);
