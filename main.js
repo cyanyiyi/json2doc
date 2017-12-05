@@ -15,6 +15,7 @@ let zhCnJson = require(I18N_PATH_ZH_CN);
 let testJsonEn = require(I18N_PATH_TEST_EN);
 let testJsonZh = require(I18N_PATH_TEST_ZH);
 
+
 function _isEmptyObject(obj) {
     for (let key in obj) {
         return false;
@@ -60,18 +61,6 @@ function fnFilterEn(obj) {
     return obj;
 }
 
-// function fnDeleteEmptyObj(obj) {
-//     for (let k in obj) {
-//         if (typeof obj[k] === 'object') {
-//             if (!_isEmptyObject(obj[k])) {
-//                 fnDeleteEmptyObj(obj[k]);
-//             } else {
-//                 delete obj[k];
-//             }
-//         }
-//     }
-//     return obj;
-// }
 
 /**
  * 比对baseObj和obj,若obj中的key不存在或者value为空,
