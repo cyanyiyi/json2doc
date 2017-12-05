@@ -30,9 +30,9 @@ const lan = {
         passNo: 'Failed',
         passCheck: '哈哈哈，呵呵。',
         status: {
-            en:'英文',
             zh:'中文',
-            tw:'tw'
+            en:'英文',
+            tw:'繁体'
         },
         status_type: {
             '': 'All',

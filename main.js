@@ -8,13 +8,12 @@ const I18N_PATH_TEST_ZH = path.join(I18N_PATH, 'test-zh.js');
 const LAN_CN = 'zh-CN';
 const LAN_TW = 'zh-TW';
 const LAN_EN = 'en-US';
-const REG_EXP_CN = /^[\u4E00-\u9FA5\.\s，。:：]+$/g; // 匹配中文带:。和不可见字符
-const REG_EXP_EN = /^[\w\d\-\.\s_:：']+$/g;
+const REG_EXP_CN = /^[\u4E00-\u9FA5\s\/\-,，.。:：?？()（）≤<>%!！…*]+$/; // 匹配中文带标点和不可见字符
+const REG_EXP_EN = /^[\w\d\-\s\/\-_',，.。:：?？()（）≤<>%!！…*]+$/;
 let enUsJson = require(I18N_PATH_EN_US);
 let zhCnJson = require(I18N_PATH_ZH_CN);
 let testJsonEn = require(I18N_PATH_TEST_EN);
 let testJsonZh = require(I18N_PATH_TEST_ZH);
-let enUsJsonPure = {};
 
 function _isEmptyObject(obj) {
     for (let key in obj) {
@@ -30,18 +29,17 @@ function _isEmptyObject(obj) {
 */
 function fnFilterZh(obj) {
     for (let k in obj) {
-        if (REG_EXP_CN.test(obj[k]) || _isEmptyObject(obj[k])) {
+        if (REG_EXP_CN.test(obj[k])) {
             delete obj[k];
-        }
-        if (typeof obj[k] === 'object' && !_isEmptyObject(obj[k])) {
+        } else if (typeof obj[k] === 'object' && !_isEmptyObject(obj[k])) {
             fnFilterZh(obj[k]);
+        }
+        if (typeof obj[k] === 'object' && _isEmptyObject(obj[k])) {
+            delete obj[k];
         }
     }
     return obj;
 }
-
-let filterTestJson = fnFilterZh(testJsonEn);
-console.log(filterTestJson);
 
 /**
  * 删除语言包中value为英文的key
@@ -50,12 +48,14 @@ console.log(filterTestJson);
 */
 function fnFilterEn(obj) {
     for (let k in obj) {
-        if (REG_EXP_EN.test(obj[k]) || _isEmptyObject(obj[k])) {
+        if (REG_EXP_EN.test(obj[k])) {
             delete obj[k];
-        }
-        if (typeof obj[k] === 'object' && !_isEmptyObject(obj[k])) {
+        } else if (typeof obj[k] === 'object' && !_isEmptyObject(obj[k])) {
             fnFilterEn(obj[k]);
         }
+        if (typeof obj[k] === 'object' && _isEmptyObject(obj[k])) {
+            delete obj[k];
+        } 
     }
     return obj;
 }
@@ -72,11 +72,6 @@ function fnFilterEn(obj) {
 //     }
 //     return obj;
 // }
-
-// let filterTestJson = fnFilterZh(testJsonEn);
-// let pureTestJson = fnDeleteEmptyObj(filterTestJson);
-// console.log(filterTestJson);
-// console.log(filterTestJson.component.v_login.status);
 
 /**
  * 比对baseObj和obj,若obj中的key不存在或者value为空,
@@ -95,13 +90,8 @@ function fnMergeObj(baseObj, obj){
     }
     return obj;
 }
-// console.log(testJsonZh);
-let newTestJsonEn = fnMergeObj(testJsonZh, filterTestJson);
-// console.log(newTestJsonEn);
 
-let filterTestJsonZh = fnFilterEn(newTestJsonEn);
-// let newTestJsonZh = fnDeleteEmptyObj(filterTestJsonZh);
-// console.log(filterTestJsonZh);
-// console.log(filterTestJsonZh.component.v_login.status);
-// console.log(newTestJsonZh);
-// console.log(newTestJsonZh.component.v_login.status);
+let filterZhJson = fnFilterZh(enUsJson);
+let newJsonEn = fnMergeObj(zhCnJson, filterZhJson);
+let enUsPenddingTranslate = fnFilterEn(newJsonEn);
+console.log(enUsPenddingTranslate);
