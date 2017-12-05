@@ -80,7 +80,22 @@ function fnMergeObj(baseObj, obj){
     return obj;
 }
 
+function jsonToCsv(obj, pName) {
+    let parentName = pName || '';
+    for (let k in obj) {
+        let str = ``;
+        if (typeof obj[k] === 'object') {
+            jsonToCsv(obj[k], `${parentName}[${k}]`);
+        } else {
+            str = `${parentName}[${k}],${obj[k]}`;
+            fs.appendFileSync(path.join(__dirname, 'test.csv'), `${str}\n`, {
+                encoding: 'utf8'
+            });
+        }
+    }
+}
+
 let filterZhJson = fnFilterZh(enUsJson);
 let newJsonEn = fnMergeObj(zhCnJson, filterZhJson);
 let enUsPenddingTranslate = fnFilterEn(newJsonEn);
-console.log(enUsPenddingTranslate);
+jsonToCsv(enUsPenddingTranslate);
