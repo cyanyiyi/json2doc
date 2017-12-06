@@ -8,8 +8,8 @@ const I18N_PATH_TEST_ZH = path.join(I18N_PATH, 'test-zh.js');
 const LAN_CN = 'zh-CN';
 const LAN_TW = 'zh-TW';
 const LAN_EN = 'en-US';
-const REG_EXP_CN = /^[\u4E00-\u9FA5\s\/\-_'"“,，.。:：?？()（）≤<>%!！…*]+$/; // 匹配中文带标点和不可见字符
-const REG_EXP_EN = /^[\w\d\-\s\/\-_'"“,，.。:：?？()（）≤<>%!！…*]+$/;
+const REG_EXP_CN = /^[\u4E00-\u9FA5\s\/\-_+'"“,，.。:：?？()（）≤<>%!！…*]+$/; // 匹配中文带标点和不可见字符
+const REG_EXP_EN = /^[\w\d\-\s\/\-_+'"“,，.。:：?？()（）≤<>%!！…*]+$/;
 const enUsJson = require(I18N_PATH_EN_US);
 const zhCnJson = require(I18N_PATH_ZH_CN);
 
