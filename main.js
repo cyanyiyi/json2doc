@@ -13,7 +13,11 @@ const REG_EXP_EN = /^[\w\d\-\s\/\-_+'"“,，.。:：?？()（）≤<>%!！…*]
 const enUsJson = require(I18N_PATH_EN_US);
 const zhCnJson = require(I18N_PATH_ZH_CN);
 
-
+/**
+ * 校验对象是否为空
+ * @param {Object} obj
+ * @return {Boolean}
+*/
 function _isEmptyObject(obj) {
     for (let key in obj) {
         return false;
@@ -23,7 +27,7 @@ function _isEmptyObject(obj) {
 
 /**
  * 删除语言包中value为中文的key
- * @param {object}
+ * @param {object} obj
  * @return {object}
 */
 function fnFilterZh(obj) {
@@ -42,7 +46,7 @@ function fnFilterZh(obj) {
 
 /**
  * 删除语言包中value为英文的key
- * @param {object}
+ * @param {object} obj
  * @return {object}
 */
 function fnFilterEn(obj) {
@@ -62,7 +66,8 @@ function fnFilterEn(obj) {
 /**
  * 比对baseObj和obj,若obj中的key不存在或者value为空,
  * 则将baseObj中的值赋给obj中的改key
- * @param {object}
+ * @param {object} baseObj
+ * @param {object} obj
  * @return {object}
 */
 function fnMergeObj(baseObj, obj){
